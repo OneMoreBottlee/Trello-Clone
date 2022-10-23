@@ -24,26 +24,33 @@ const Boards = styled.div`
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState)
 
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    if (!destination) return
-
-    // setToDos((oldToDos) => {
-    //   const copyToDos = [...oldToDos]
-    //   // 지우기
-    //   copyToDos.splice(source.index, 1)
-
-    //   // 추가하기
-    //   copyToDos.splice(destination?.index, 0, draggableId)
-
-    //   return copyToDos
-    // })
+  const onDragEnd = (info:DropResult) => {
+    console.log(info)
+    const {destination, draggableId, source} = info
+    if(destination?.droppableId === source.droppableId){
+      // 같은 Board에서 움직일 때
+      
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]]
+        // 지우기
+        boardCopy.splice(source.index, 1)
+        // 추가하기
+        boardCopy.splice(destination?.index, 0, draggableId)
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy,
+        }
+      })
+    }
+    
   }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
         <Boards>
-          {Object.keys(toDos).map((boardId) => <Board boardId="boardId" key={boardId} toDos={toDos[boardId]} />)}
+          {Object.keys(toDos).map((boardId) => (
+            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />))}
         </Boards>
       </Wrapper>
     </DragDropContext>
