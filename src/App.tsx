@@ -21,59 +21,56 @@ const Boards = styled.div`
   gap: 10px;
 `
 
-interface IToDoState {
-  [key: string]: string[];
-}
-
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState)
-  // const onDragEnd = (info: DropResult) => {
-  //   console.log(info)
-  //   const { destination, draggableId, source } = info
-  //   if (!destination) return
-  //   if (destination?.droppableId === source.droppableId) {
-  //     // 같은 Board에서 움직일 때
+  const onDragEnd = (info: DropResult) => {
+    const { destination, draggableId, source } = info
+    if (!destination) return
+    if (destination?.droppableId === source.droppableId) {
+      // 같은 Board에서 움직일 때
 
-  //     setToDos((allBoards) => {
-  //       const boardCopy = [...allBoards[source.droppableId]]
-  //       // 지우기
-  //       boardCopy.splice(source.index, 1)
-  //       // 추가하기
-  //       boardCopy.splice(destination?.index, 0, draggableId)
-  //       return {
-  //         ...allBoards,
-  //         [source.droppableId]: boardCopy,
-  //       }
-  //     })
-  //   }
-  //   if (destination.droppableId !== source.droppableId) {
-  //     // 다른 Board에서 움직일 때
-  //     setToDos((allBoards) => {
-  //       const sourceBoard = [...allBoards[source.droppableId]]
-  //       const destinationBoard = [...allBoards[destination.droppableId]]
-  //       sourceBoard.splice(source.index, 1)
-  //       destinationBoard.splice(destination?.index, 0, draggableId)
-  //       return {
-  //         ...allBoards,
-  //         [source.droppableId]: sourceBoard,
-  //         [destination.droppableId]: destinationBoard
-  //       }
-  //     })
-  //   }
-  // }
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]]
+        const taskObj = boardCopy[source.index]
+        // 지우기
+        boardCopy.splice(source.index, 1)
+        // 추가하기
+        boardCopy.splice(destination?.index, 0, taskObj)
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy,
+        }
+      })
+    }
+    if (destination.droppableId !== source.droppableId) {
+      // 다른 Board에서 움직일 때
+      setToDos((allBoards) => {
+        const sourceBoard = [...allBoards[source.droppableId]]
+        const taskObj = sourceBoard[source.index]
+        const destinationBoard = [...allBoards[destination.droppableId]]
+        sourceBoard.splice(source.index, 1)
+        destinationBoard.splice(destination?.index, 0, taskObj)
+        return {
+          ...allBoards,
+          [source.droppableId]: sourceBoard,
+          [destination.droppableId]: destinationBoard
+        }
+      })
+    }
+  }
 
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    if (!destination) return;
-    setToDos((allBoards) => {
-      const copyToDos: IToDoState = {};
-      Object.keys(allBoards).forEach((toDosKey) => {
-        copyToDos[toDosKey] = [...allBoards[toDosKey]];
-      });
-      copyToDos[source.droppableId].splice(source.index, 1);
-      copyToDos[destination.droppableId].splice(destination.index, 0, draggableId);
-      return copyToDos;
-    });
-  };
+  // const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+  //   if (!destination) return;
+  //   setToDos((allBoards) => {
+  //     const copyToDos: IToDoState = {};
+  //     Object.keys(allBoards).forEach((toDosKey) => {
+  //       copyToDos[toDosKey] = [...allBoards[toDosKey]];
+  //     });
+  //     copyToDos[source.droppableId].splice(source.index, 1);
+  //     copyToDos[destination.droppableId].splice(destination.index, 0, draggableId);
+  //     return copyToDos;
+  //   });
+  // };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
