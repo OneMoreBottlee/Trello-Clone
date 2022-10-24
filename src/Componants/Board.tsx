@@ -3,11 +3,11 @@ import styled from "styled-components"
 import DraggableCard from "./DragabbleCard"
 
 const Wrapper = styled.div`
-    padding: 20px 10px;
-    padding-top: 30px;
+    width: 300px;
+    padding-top: 10px;
     background-color: ${(props) => props.theme.boardColor};
     border-radius: 5px;
-    min-height: 200px;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
 `
@@ -20,9 +20,10 @@ const Title = styled.h2`
 `
 
 const Area = styled.div<IAreaProps>`
-    background-color: ${props => props.isDraggingOver ? "pink" : props.isDraggingFromThis ? "red" : "blue"};
+    background-color: ${props => props.isDraggingOver ? "#fe6e9" : props.isDraggingFromThis ? "#b2bec3" : "transparent"};
     flex-grow: 1;
     transition: background-color .3s ease-in-out;
+    padding: 20px;
 `
 
 interface IAreaProps{
